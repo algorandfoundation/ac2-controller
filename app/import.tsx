@@ -20,7 +20,6 @@ import { accountsStore } from '@/stores/accounts';
 import { passkeysStore } from '@/stores/passkeys';
 import { PreventScreenshot } from '@/components/PreventScreenshot';
 import { bootstrap } from '@/lib/bootstrap';
-import type { IdentitiesKeystoreExtension } from '@/extensions/identities-keystore/types';
 import { importDidDocument } from '@/utils/did-backup';
 
 // Extract provider configuration from expo-constants
@@ -116,11 +115,7 @@ export default function ImportWalletScreen() {
       if (backupDoc) {
         // Restore derived keys from backup
         console.log('Restoring from backup document...');
-        const identitiesKeystore =
-          identity.store as unknown as IdentitiesKeystoreExtension['identity']['store'];
-        if (identitiesKeystore.restoreFromDidDocument) {
-          await identitiesKeystore.restoreFromDidDocument(backupDoc);
-        }
+        await identity.store.restoreFromDidDocument(backupDoc);
         console.log('Backup restoration complete.');
       } else {
         // Default generation if no backup
