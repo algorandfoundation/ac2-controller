@@ -4,10 +4,9 @@ import { MaterialIcons } from '@expo/vector-icons';
 import * as DocumentPicker from 'expo-document-picker';
 import JSONTree from 'react-native-json-tree';
 import Modal from '../components/Modal';
-import type { DIDDocument } from '@/extensions/identities/types';
+import type { DIDDocument } from '@algorandfoundation/identities-store';
 import { exportDidDocument, importDidDocument } from '@/utils/did-backup';
 import { useProvider } from '@/hooks/useProvider';
-import type { IdentitiesKeystoreExtension } from '@/extensions/identities-keystore/types';
 
 interface DidDocumentModalProps {
   visible: boolean;
@@ -72,11 +71,7 @@ export function DidDocumentModal({
             style: 'default',
             onPress: async () => {
               try {
-                const identitiesKeystore =
-                  identity.store as unknown as IdentitiesKeystoreExtension['identity']['store'];
-                if (identitiesKeystore.restoreFromDidDocument) {
-                  await identitiesKeystore.restoreFromDidDocument(importedDoc);
-                }
+                await identity.store.restoreFromDidDocument(importedDoc);
                 onDidDocumentUpdate?.(importedDoc);
               } catch (error) {
                 Alert.alert(

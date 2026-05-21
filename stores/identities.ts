@@ -1,5 +1,5 @@
 import { Store } from '@tanstack/react-store';
-import { IdentityStoreState } from '@/extensions/identities';
+import type { IdentityStoreState } from '@algorandfoundation/identities-store';
 
 export const identitiesStore = new Store<IdentityStoreState>({
   identities: [],

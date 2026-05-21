@@ -205,11 +205,6 @@ export default function LandingScreen() {
         visible={modalVisible}
         onClose={() => setModalVisible(false)}
         didDocument={activeIdentity?.didDocument}
-        onDidDocumentUpdate={async (newDidDocument) => {
-          if (activeIdentity) {
-            await identity.store.updateDidDocument(activeIdentity.address, newDidDocument);
-          }
-        }}
       />
     </SafeAreaView>
   );

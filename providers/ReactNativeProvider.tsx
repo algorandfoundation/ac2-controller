@@ -7,18 +7,9 @@ import {
   AccountStoreExtension,
   WithAccountStore,
 } from '@algorandfoundation/accounts-store';
-import {
-  Identity,
-  IdentityStoreApi,
-  IdentityStoreExtension,
-  WithIdentityStore,
-} from '@/extensions/identities';
-import {
-  Passkey,
-  PasskeyStoreApi,
-  PasskeyStoreExtension,
-  WithPasskeyStore,
-} from '@/extensions/passkeys';
+import type { Identity } from '@algorandfoundation/identities-store';
+import { WithIdentities, type IdentitiesExtension } from '@algorandfoundation/identities-extension';
+import { Passkey, PasskeyStoreExtension, WithPasskeyStore } from '@/extensions/passkeys';
 import type { KeyStoreAPI, Key } from '@algorandfoundation/keystore';
 import { type LogMessage, WithLogStore, type LogStoreApi } from '@algorandfoundation/log-store';
 import type { keyStoreHooks } from '@/stores/before-after';
@@ -26,7 +17,6 @@ import {
   KeystoreAccount,
   WithAccountsKeystore,
 } from '@algorandfoundation/accounts-keystore-extension';
-import { WithIdentitiesKeystore } from '@/extensions/identities-keystore';
 import { WithPasskeysKeystore } from '@/extensions/passkeys-keystore';
 
 export class ReactNativeProvider extends Provider<typeof ReactNativeProvider.EXTENSIONS> {
@@ -34,11 +24,10 @@ export class ReactNativeProvider extends Provider<typeof ReactNativeProvider.EXT
     WithLogStore,
     WithKeyStore,
     WithAccountStore,
-    WithIdentityStore,
     WithPasskeyStore,
     WithAccountsKeystore,
     WithPasskeysKeystore,
-    WithIdentitiesKeystore,
+    WithIdentities,
   ] as const;
 
   keys!: Key[];
@@ -49,7 +38,7 @@ export class ReactNativeProvider extends Provider<typeof ReactNativeProvider.EXT
   status!: string;
 
   account!: AccountStoreExtension<Account | KeystoreAccount>['account'];
-  identity!: IdentityStoreExtension['identity'];
+  identity!: IdentitiesExtension['identity'];
   passkey!: PasskeyStoreExtension['passkey'];
   // The generic Keystore Interface
   key!: {
