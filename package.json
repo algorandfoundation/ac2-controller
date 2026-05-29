@@ -3,6 +3,12 @@
   "version": "1.0.0",
   "private": true,
   "packageManager": "pnpm@10.12.1",
+  "scripts": {
+    "fmt": "pnpm -r --if-present fmt",
+    "fmt:check": "pnpm -r --if-present fmt:check",
+    "lint": "pnpm -r --if-present lint",
+    "test": "pnpm -r --if-present test"
+  },
   "workspaces": [
     "packages/*"
   ],

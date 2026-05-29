@@ -3,6 +3,6 @@
 pre-commit:
   parallel: true
   jobs:
-    - run: pnpm --filter @ac2/app fmt:check
-    - run: pnpm --filter @ac2/app lint
-    - run: pnpm --filter @ac2/app test
+    - run: pnpm fmt:check
+    - run: pnpm lint
+    - run: pnpm test
