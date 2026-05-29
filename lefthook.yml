@@ -3,6 +3,6 @@
 pre-commit:
   parallel: true
   jobs:
-    - run: npm run fmt:check
-    - run: npm run lint
-    - run: npm run test
+    - run: pnpm fmt:check
+    - run: pnpm lint
+    - run: pnpm test
