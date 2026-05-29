@@ -1,0 +1,50 @@
+{
+  "name": "@ac2/schema-validator",
+  "version": "0.1.0",
+  "description": "TypeScript SDK/CLI for validating and decoding AC2 protocol messages",
+  "type": "module",
+  "main": "./dist/cjs/index.js",
+  "module": "./dist/esm/index.js",
+  "types": "./dist/esm/index.d.ts",
+  "exports": {
+    ".": {
+      "types": "./dist/esm/index.d.ts",
+      "import": "./dist/esm/index.js",
+      "require": "./dist/cjs/index.js"
+    }
+  },
+  "bin": {
+    "ac2-validate": "./dist/esm/cli.js"
+  },
+  "files": [
+    "dist"
+  ],
+  "scripts": {
+    "build": "tsc -p tsconfig.build.esm.json && tsc -p tsconfig.build.cjs.json && node scripts/postbuild.cjs",
+    "dev": "tsc -p tsconfig.build.esm.json --watch",
+    "fmt": "oxfmt",
+    "fmt:check": "oxfmt --check",
+    "lint": "oxlint",
+    "test": "vitest run",
+    "test:watch": "vitest",
+    "type-check": "tsc --noEmit"
+  },
+  "keywords": [
+    "ac2",
+    "didcomm",
+    "algorand",
+    "schema",
+    "validator",
+    "protocol"
+  ],
+  "license": "MIT",
+  "dependencies": {
+    "ajv": "^8.17.1",
+    "commander": "^13.1.0"
+  },
+  "devDependencies": {
+    "@types/node": "^22.15.29",
+    "typescript": "^5.8.3",
+    "vitest": "^3.2.3"
+  }
+}
