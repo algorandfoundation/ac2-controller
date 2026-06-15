@@ -1,3 +1,0 @@
-[submodule "packages/liquid-auth-js"]
-	path = packages/liquid-auth-js
-	url = https://github.com/algorandfoundation/liquid-auth-js.git
