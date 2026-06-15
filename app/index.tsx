@@ -18,13 +18,13 @@ export default function Index() {
   });
   const { keys, status } = useProvider();
 
-  if (!fontsLoaded || status === 'loading') {
-    return null;
-  }
-
   React.useEffect(() => {
     SplashScreen.hideAsync();
   }, []);
+
+  if (!fontsLoaded || status === 'loading') {
+    return null;
+  }
 
   if (keys.length > 0) return <Redirect href="/landing" />;
   return <Redirect href="/onboarding" />;
