@@ -15,9 +15,13 @@ import ReactNativePasskeyAutofill from '@algorandfoundation/react-native-passkey
 import { BottomSheetModalProvider } from '@gorhom/bottom-sheet';
 import { useEventListener } from 'expo';
 import { Stack } from 'expo-router';
+import * as SplashScreen from 'expo-splash-screen';
 import React from 'react';
 import { GestureHandlerRootView } from 'react-native-gesture-handler';
 import { registerGlobals } from 'react-native-webrtc';
+
+// Keep the splash screen visible while we fetch resources
+SplashScreen.preventAutoHideAsync();
 
 globalPolyfill();
 registerGlobals();
