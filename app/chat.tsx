@@ -18,20 +18,21 @@ import React, { useEffect, useMemo, useRef, useState } from 'react';
 import {
   FlatList,
   Keyboard,
-  KeyboardAvoidingView,
   NativeScrollEvent,
   NativeSyntheticEvent,
+  Platform,
   StyleSheet,
   TouchableOpacity,
   View,
 } from 'react-native';
-import { SafeAreaView } from 'react-native-safe-area-context';
+import { SafeAreaView, useSafeAreaInsets } from 'react-native-safe-area-context';
 
 // Thread id used for messages persisted before multi-conversation support.
 const DEFAULT_THID = 'default';
 
 export default function ChatScreen() {
   const router = useRouter();
+  const insets = useSafeAreaInsets();
   const params = useLocalSearchParams<{ origin: string; requestId: string }>();
   const [inputText, setInputText] = useState('');
   const {
@@ -169,6 +170,15 @@ export default function ChatScreen() {
 
   const [isHeartbeatVisible, setIsHeartbeatVisible] = useState(false);
 
+  // Height of the on-screen keyboard, driven by the OS keyboard events. Because
+  // edge-to-edge is enabled the Android window does NOT resize when the keyboard
+  // opens, so we lift the composer ourselves with a state-driven spacer below it
+  // (see the render). This is owned here, at the screen, rather than inside
+  // ChatInput — and because it's plain state it always resets to 0 on hide, with
+  // no residual padding left behind (the failure mode of KeyboardAvoidingView in
+  // this RN/new-arch/edge-to-edge combination).
+  const [keyboardHeight, setKeyboardHeight] = useState(0);
+
   useEffect(() => {
     if (isConnected) {
       setIsHeartbeatVisible(true);
@@ -209,14 +219,21 @@ export default function ChatScreen() {
     }
   };
 
-  // Scroll to bottom when keyboard opens
+  // Track the keyboard so the screen-level spacer can lift the composer above
+  // it, and snap the list to the bottom as it opens. iOS exposes the `Will`
+  // events (smoother, fire before the animation); Android only the `Did` events.
   useEffect(() => {
-    const keyboardDidShowListener = Keyboard.addListener('keyboardDidShow', () => {
+    const showEvt = Platform.OS === 'ios' ? 'keyboardWillShow' : 'keyboardDidShow';
+    const hideEvt = Platform.OS === 'ios' ? 'keyboardWillHide' : 'keyboardDidHide';
+    const showSub = Keyboard.addListener(showEvt, (e) => {
+      setKeyboardHeight(e.endCoordinates.height);
       flatListRef.current?.scrollToEnd({ animated: true });
     });
+    const hideSub = Keyboard.addListener(hideEvt, () => setKeyboardHeight(0));
 
     return () => {
-      keyboardDidShowListener.remove();
+      showSub.remove();
+      hideSub.remove();
     };
   }, []);
 
@@ -247,8 +264,18 @@ export default function ChatScreen() {
         ? 'Error'
         : 'Disconnected';
 
+  // Height of the spacer that sits below the composer. While the keyboard is
+  // open we lift the composer to its top; while it's closed we just clear the
+  // nav bar / home indicator. On Android with edge-to-edge the keyboard's
+  // reported height excludes the navigation bar inset, so the keys overlap the
+  // composer by that amount unless we add it back.
+  const composerSpacer =
+    keyboardHeight > 0
+      ? keyboardHeight + (Platform.OS === 'android' ? insets.bottom : 0)
+      : insets.bottom;
+
   return (
-    <SafeAreaView style={styles.container} edges={['top', 'left', 'right', 'bottom']}>
+    <SafeAreaView style={styles.container} edges={['top', 'left', 'right']}>
       <Stack.Screen options={{ headerShown: false }} />
 
       <View style={styles.header}>
@@ -272,49 +299,52 @@ export default function ChatScreen() {
         )}
       </View>
 
-      <KeyboardAvoidingView style={styles.flex}>
-        {/* NOTE: do NOT wrap this body in a TouchableWithoutFeedback to dismiss
-            the keyboard — that wrapper steals the touch responder and prevents
-            the FlatList below from ever receiving scroll/pan gestures (the list
-            would only scroll after focusing the input reshuffled the
-            responder). The keyboard is dismissed via the FlatList's
-            keyboardDismissMode/keyboardShouldPersistTaps instead. */}
-        <View style={styles.flex}>
-          <ThreadBar
-            threads={threads}
-            activeThid={activeThid}
-            defaultThid={DEFAULT_THID}
-            isConnected={isConnected}
-            threadLabel={threadLabel}
-            onOpenThread={(thid) => openConversation(thid)}
-            onCloseThread={closeConversation}
-            onNewThread={() => openConversation()}
-          />
+      {/* NOTE: do NOT wrap this body in a TouchableWithoutFeedback to dismiss
+          the keyboard — that wrapper steals the touch responder and prevents
+          the FlatList below from ever receiving scroll/pan gestures (the list
+          would only scroll after focusing the input reshuffled the
+          responder). The keyboard is dismissed via the FlatList's
+          keyboardDismissMode/keyboardShouldPersistTaps instead. */}
+      <View style={styles.flex}>
+        <ThreadBar
+          threads={threads}
+          activeThid={activeThid}
+          defaultThid={DEFAULT_THID}
+          isConnected={isConnected}
+          threadLabel={threadLabel}
+          onOpenThread={(thid) => openConversation(thid)}
+          onCloseThread={closeConversation}
+          onNewThread={() => openConversation()}
+        />
 
-          <ChatTimeline
-            timeline={timeline}
-            listRef={flatListRef}
-            actionedRequestIds={actionedRequestIds}
-            isConnected={isConnected}
-            onApproveSigning={handleApprove}
-            onRejectSigning={handleReject}
-            onApproveKey={handleApproveKey}
-            onRejectKey={handleRejectKey}
-            onScroll={handleScroll}
-            onScrollBeginDrag={handleScrollBeginDrag}
-            onScrollEndDrag={handleMomentumScrollEnd}
-            onMomentumScrollEnd={handleMomentumScrollEnd}
-            onContentSizeChange={maybeScrollToEnd}
-          />
+        <ChatTimeline
+          timeline={timeline}
+          listRef={flatListRef}
+          actionedRequestIds={actionedRequestIds}
+          isConnected={isConnected}
+          onApproveSigning={handleApprove}
+          onRejectSigning={handleReject}
+          onApproveKey={handleApproveKey}
+          onRejectKey={handleRejectKey}
+          onScroll={handleScroll}
+          onScrollBeginDrag={handleScrollBeginDrag}
+          onScrollEndDrag={handleMomentumScrollEnd}
+          onMomentumScrollEnd={handleMomentumScrollEnd}
+          onContentSizeChange={maybeScrollToEnd}
+        />
 
-          <ChatInput
-            value={inputText}
-            onChangeText={setInputText}
-            onSend={handleSend}
-            isConnected={isConnected}
-          />
-        </View>
-      </KeyboardAvoidingView>
+        <ChatInput
+          value={inputText}
+          onChangeText={setInputText}
+          onSend={handleSend}
+          isConnected={isConnected}
+        />
+
+        {/* Lifts the composer above the keyboard while it's open, and clears the
+            nav bar / home indicator while it's closed (see composerSpacer).
+            Plain state, so it resets cleanly on hide. */}
+        <View style={{ height: composerSpacer, backgroundColor: theme.colors.bg.white }} />
+      </View>
 
       <AC2TelemetryTraceModal
         ref={telemetryModalRef}
