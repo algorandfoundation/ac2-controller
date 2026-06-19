@@ -252,6 +252,7 @@ export default function ChatScreen() {
   const handleSend = () => {
     if (inputText.trim()) {
       send(inputText.trim());
+      Keyboard.dismiss();
       setInputText('');
     }
   };
