@@ -168,14 +168,14 @@ const styles = StyleSheet.create({
   },
   type: {
     fontSize: theme.typography.sizes.sm + 1,
-    fontWeight: theme.typography.weights.bold,
+    fontFamily: theme.typography.fonts.bold,
     color: theme.colors.chat.ac2Title,
     flex: 1,
   },
   direction: {
     fontSize: theme.typography.sizes.sm,
     color: theme.colors.chat.accent,
-    fontWeight: theme.typography.weights.semiBold,
+    fontFamily: theme.typography.fonts.semiBold,
   },
   body: {
     fontFamily: 'monospace',
@@ -186,7 +186,7 @@ const styles = StyleSheet.create({
     fontSize: theme.typography.sizes.base,
     color: theme.colors.chat.ac2Text,
     marginBottom: theme.spacing.xs + 2,
-    fontWeight: theme.typography.weights.medium,
+    fontFamily: theme.typography.fonts.medium,
   },
   actions: {
     flexDirection: 'row',
@@ -196,17 +196,18 @@ const styles = StyleSheet.create({
   },
   actioned: {
     fontSize: theme.typography.sizes.sm + 1,
-    fontWeight: theme.typography.weights.semiBold,
+    fontFamily: theme.typography.fonts.semiBold,
     color: theme.colors.chat.actioned,
     fontStyle: 'italic',
   },
   expired: {
     fontSize: theme.typography.sizes.sm + 1,
-    fontWeight: theme.typography.weights.semiBold,
+    fontFamily: theme.typography.fonts.semiBold,
     color: theme.colors.chat.expired,
     fontStyle: 'italic',
   },
   timestamp: {
+    fontFamily: theme.typography.fonts.regular,
     fontSize: 10,
     marginTop: theme.spacing.xs,
     alignSelf: 'flex-end',

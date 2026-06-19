@@ -77,10 +77,11 @@ const styles = StyleSheet.create({
   },
   name: {
     fontSize: theme.typography.sizes.sm + 1,
-    fontWeight: theme.typography.weights.bold,
+    fontFamily: theme.typography.fonts.bold,
     color: theme.colors.chat.toolName,
   },
   time: {
+    fontFamily: theme.typography.fonts.regular,
     fontSize: 10,
     color: theme.colors.chat.toolMeta,
     marginLeft: 'auto',

@@ -56,6 +56,7 @@ export const bubbleStyles = StyleSheet.create({
     borderBottomRightRadius: theme.borderRadius.lg,
   },
   text: {
+    fontFamily: theme.typography.fonts.regular,
     fontSize: theme.typography.sizes.lg - 1,
     lineHeight: 22,
   },
@@ -66,6 +67,7 @@ export const bubbleStyles = StyleSheet.create({
     color: theme.colors.chat.bubblePeerText,
   },
   timestamp: {
+    fontFamily: theme.typography.fonts.regular,
     fontSize: 10,
     marginTop: theme.spacing.xs,
     alignSelf: 'flex-end',

@@ -60,6 +60,7 @@ const styles = StyleSheet.create({
     paddingHorizontal: theme.spacing.base,
     paddingVertical: theme.spacing.sm + 2,
     marginRight: theme.spacing.sm + 2,
+    fontFamily: theme.typography.fonts.regular,
     fontSize: theme.typography.sizes.lg - 1,
     maxHeight: 120,
     color: theme.colors.chat.inputText,

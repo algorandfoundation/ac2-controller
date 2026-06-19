@@ -291,7 +291,6 @@ const stylesheet = StyleSheet.create({
     flexShrink: 1,
     fontSize: theme.typography.sizes.lg,
     fontFamily: theme.typography.fonts.bold,
-    fontWeight: 'bold',
     color: theme.colors.fg.inverse,
   },
   subtitle: {

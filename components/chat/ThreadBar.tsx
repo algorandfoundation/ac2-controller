@@ -109,7 +109,7 @@ const styles = StyleSheet.create({
   },
   chipText: {
     fontSize: theme.typography.sizes.md,
-    fontWeight: theme.typography.weights.semiBold,
+    fontFamily: theme.typography.fonts.semiBold,
     color: theme.colors.chat.chipText,
   },
   chipTextActive: {
@@ -129,7 +129,7 @@ const styles = StyleSheet.create({
   },
   newChipText: {
     fontSize: theme.typography.sizes.md,
-    fontWeight: theme.typography.weights.bold,
+    fontFamily: theme.typography.fonts.bold,
     color: theme.colors.chat.newChipText,
   },
 });

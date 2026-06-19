@@ -94,9 +94,9 @@ export const borderRadius = {
 export const typography = {
   fonts: {
     regular: 'PlusJakartaSans-Regular',
-    medium: 'PlusJakartaSans-Regular_Medium',
-    semiBold: 'PlusJakartaSans-Regular_SemiBold',
-    bold: 'PlusJakartaSans-Regular_Bold',
+    medium: 'PlusJakartaSans-Medium',
+    semiBold: 'PlusJakartaSans-SemiBold',
+    bold: 'PlusJakartaSans-Bold',
   },
   sizes: {
     xs: 9,

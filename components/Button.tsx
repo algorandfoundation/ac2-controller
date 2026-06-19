@@ -3,6 +3,7 @@ import {
   ActivityIndicator,
   StyleProp,
   StyleSheet,
+  TextStyle,
   TouchableOpacity,
   ViewStyle,
 } from 'react-native';
@@ -71,8 +72,8 @@ export function Button({
     ...(variant === 'link' || variant === 'ghost' ? { backgroundColor: 'transparent' } : {}),
   };
 
-  const variantStyle = styles.variants[variant];
-  const sizeStyle = styles.sizes[size];
+  const variantStyle = variantStyles[variant];
+  const sizeStyle = sizeStyles[size];
 
   return (
     <TouchableOpacity
@@ -98,7 +99,7 @@ export function Button({
           <AppText
             variant="label"
             color={textColorMap[variant] as any}
-            style={variant === 'white' ? styles.whiteLabel : undefined}
+            style={variant === 'white' ? whiteLabelStyle : undefined}
             bold
           >
             {label}
@@ -123,6 +124,63 @@ const getColorValue = (colorName: ButtonColor) => {
   return colorMap[colorName];
 };
 
+const variantStyles: Record<ButtonVariant, ViewStyle> = {
+  primary: {
+    backgroundColor: theme.colors.brand.primary,
+    borderRadius: theme.borderRadius.md,
+    ...theme.shadows.primary,
+  },
+  outline: {
+    backgroundColor: 'transparent',
+    borderRadius: theme.borderRadius.md,
+    borderWidth: 1,
+    borderColor: theme.colors.border.default,
+  },
+  ghost: {
+    backgroundColor: 'transparent',
+    borderRadius: theme.borderRadius.md,
+  },
+  pill: {
+    backgroundColor: theme.colors.brand.primary,
+    borderRadius: theme.borderRadius.full,
+    ...theme.shadows.md,
+  },
+  pillLight: {
+    backgroundColor: theme.colors.bg.surface,
+    borderRadius: theme.borderRadius.full,
+    ...theme.shadows.md,
+  },
+  white: {
+    backgroundColor: theme.colors.bg.white,
+    borderRadius: theme.borderRadius.full,
+  },
+  link: {
+    backgroundColor: 'transparent',
+    borderRadius: 0,
+    paddingVertical: 0,
+    paddingHorizontal: 0,
+  },
+};
+
+const whiteLabelStyle: TextStyle = {
+  color: theme.colors.fg.onLight,
+};
+
+const sizeStyles: Record<ButtonSize, ViewStyle> = {
+  sm: {
+    paddingVertical: theme.spacing.sm,
+    paddingHorizontal: theme.spacing.md,
+  },
+  md: {
+    paddingVertical: theme.spacing.md,
+    paddingHorizontal: theme.spacing.base,
+  },
+  lg: {
+    paddingVertical: theme.spacing.base,
+    paddingHorizontal: theme.spacing.xl,
+  },
+};
+
 const styles = StyleSheet.create({
   base: {
     flexDirection: 'row',
@@ -130,57 +188,6 @@ const styles = StyleSheet.create({
     justifyContent: 'center',
     gap: theme.spacing.sm,
   },
-  variants: {
-    primary: {
-      backgroundColor: theme.colors.brand.primary,
-      borderRadius: theme.borderRadius.md,
-      ...theme.shadows.primary,
-    },
-    outline: {
-      backgroundColor: 'transparent',
-      borderRadius: theme.borderRadius.md,
-      borderWidth: 1,
-      borderColor: theme.colors.border.default,
-    },
-    ghost: {
-      backgroundColor: 'transparent',
-      borderRadius: theme.borderRadius.md,
-    },
-    pill: {
-      backgroundColor: theme.colors.brand.primary,
-      borderRadius: theme.borderRadius.full,
-      ...theme.shadows.md,
-    },
-    pillLight: {
-      backgroundColor: theme.colors.bg.surface,
-      borderRadius: theme.borderRadius.full,
-      ...theme.shadows.md,
-    },
-    white: {
-      backgroundColor: theme.colors.bg.white,
-      borderRadius: theme.borderRadius.full,
-    },
-    link: {
-      backgroundColor: 'transparent',
-      borderRadius: 0,
-      paddingVertical: 0,
-      paddingHorizontal: 0,
-    },
-  } as Record<ButtonVariant, any>,
-  sizes: {
-    sm: {
-      paddingVertical: theme.spacing.sm,
-      paddingHorizontal: theme.spacing.md,
-    },
-    md: {
-      paddingVertical: theme.spacing.md,
-      paddingHorizontal: theme.spacing.base,
-    },
-    lg: {
-      paddingVertical: theme.spacing.base,
-      paddingHorizontal: theme.spacing.xl,
-    },
-  } as Record<ButtonSize, any>,
   fullWidth: {
     width: '100%',
   },
@@ -190,8 +197,5 @@ const styles = StyleSheet.create({
   },
   disabled: {
     opacity: 0.5,
-  },
-  whiteLabel: {
-    color: theme.colors.fg.onLight,
   },
 });

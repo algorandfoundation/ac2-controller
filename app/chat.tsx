@@ -1,5 +1,6 @@
 import { AC2TelemetryTraceModal } from '@/components/ac2/TelemetryTraceModal';
 import { ChatHeaderActions } from '@/components/chat/ChatHeaderActions';
+import { AppText } from '@/components/Text';
 import { ChatInput } from '@/components/chat/ChatInput';
 import { ChatTimeline } from '@/components/chat/ChatTimeline';
 import { ThreadBar } from '@/components/chat/ThreadBar';
@@ -238,34 +239,38 @@ export default function ChatScreen() {
     }
   };
 
+  const headerTitle = isConnected
+    ? 'Connected'
+    : isLoading
+      ? 'Connecting...'
+      : isError
+        ? 'Error'
+        : 'Disconnected';
+
   return (
-    <SafeAreaView style={styles.container} edges={['left', 'right', 'bottom']}>
-      <Stack.Screen
-        options={{
-          title: isConnected
-            ? 'Connected'
-            : isLoading
-              ? 'Connecting...'
-              : isError
-                ? 'Error'
-                : 'Disconnected',
-          headerShown: true,
-          headerLeft: () => (
-            <TouchableOpacity onPress={() => router.back()} style={styles.headerBack}>
-              <MaterialIcons name="arrow-back" size={24} color={theme.colors.chat.headerBack} />
-            </TouchableOpacity>
-          ),
-          headerRight: () =>
-            isConnected ? (
-              <ChatHeaderActions
-                isHeartbeatVisible={isHeartbeatVisible}
-                onClear={handleClear}
-                onDisconnect={handleDisconnect}
-                onTrace={() => telemetryModalRef.current?.present()}
-              />
-            ) : null,
-        }}
-      />
+    <SafeAreaView style={styles.container} edges={['top', 'left', 'right', 'bottom']}>
+      <Stack.Screen options={{ headerShown: false }} />
+
+      <View style={styles.header}>
+        <TouchableOpacity onPress={() => router.back()} style={styles.headerBack}>
+          <MaterialIcons name="arrow-back" size={24} color={theme.colors.chat.headerBack} />
+        </TouchableOpacity>
+
+        <AppText variant="h3" color="inverse" bold style={styles.headerTitle} numberOfLines={1}>
+          {headerTitle}
+        </AppText>
+
+        {isConnected ? (
+          <ChatHeaderActions
+            isHeartbeatVisible={isHeartbeatVisible}
+            onClear={handleClear}
+            onDisconnect={handleDisconnect}
+            onTrace={() => telemetryModalRef.current?.present()}
+          />
+        ) : (
+          <View style={styles.headerRight} />
+        )}
+      </View>
 
       <KeyboardAvoidingView style={styles.flex}>
         {/* NOTE: do NOT wrap this body in a TouchableWithoutFeedback to dismiss
@@ -329,7 +334,30 @@ const styles = StyleSheet.create({
   flex: {
     flex: 1,
   },
+  header: {
+    minHeight: 64,
+    backgroundColor: theme.colors.bg.header,
+    paddingLeft: theme.spacing.sm,
+    paddingRight: theme.spacing.base,
+    paddingVertical: theme.spacing.md,
+    flexDirection: 'row',
+    alignItems: 'center',
+    justifyContent: 'space-between',
+  },
   headerBack: {
-    marginLeft: theme.spacing.sm + 2,
+    width: 36,
+    height: 36,
+    borderRadius: theme.borderRadius.full,
+    backgroundColor: theme.colors.bg.white,
+    justifyContent: 'center',
+    alignItems: 'center',
+    marginLeft: theme.spacing.sm,
+  },
+  headerTitle: {
+    flex: 1,
+    marginHorizontal: theme.spacing.sm,
+  },
+  headerRight: {
+    width: 36,
   },
 });
