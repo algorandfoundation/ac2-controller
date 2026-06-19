@@ -37,7 +37,7 @@ const styles = StyleSheet.create({
     borderBottomColor: theme.colors.state.warning,
   },
   warningText: {
-    color: theme.colors.state.warning,
+    color: '#b06000',
     flex: 1,
   },
 });
