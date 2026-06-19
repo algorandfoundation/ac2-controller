@@ -7,38 +7,32 @@ jest.mock('expo-router', () => ({
   useRouter: () => ({
     push: jest.fn(),
     replace: jest.fn(),
+    navigate: jest.fn(),
     back: jest.fn(),
+  }),
+  Stack: { Screen: () => null },
+}));
+
+// Mock react-native-mmkv — the sessions/messages stores back the chat list and
+// instantiate MMKV at import time, which has no native module under jest.
+jest.mock('react-native-mmkv', () => ({
+  createMMKV: () => ({
+    getString: jest.fn(() => undefined),
+    set: jest.fn(),
   }),
 }));
 
-// Mock expo-constants
-jest.mock('expo-constants', () => ({
-  expoConfig: {
-    extra: {
-      provider: {
-        name: 'AC2-Controller',
-        primaryColor: '#3B82F6',
-        secondaryColor: '#E1EFFF',
-        accentColor: '#10B981',
-        welcomeMessage: 'Your identity, connected.',
-        showAccounts: true,
-        showPasskeys: true,
-        showIdentities: true,
-        showConnections: true,
-      },
-    },
-  },
-}));
-
-// Mock useProvider hook
+// Mock useProvider — pulled in transitively by MenuDrawer; the real module loads
+// the native keystore, which is unavailable under jest.
 jest.mock('@/hooks/useProvider', () => ({
   useProvider: () => ({
     key: { store: { clear: jest.fn() } },
     identity: { store: { clear: jest.fn() } },
     account: { store: { clear: jest.fn() } },
     passkey: { store: { clear: jest.fn() } },
-    identities: [{ did: 'did:key:z6Mkh...' }],
-    accounts: [{ address: 'ADDR123...', balance: 100 }],
+    keys: [],
+    identities: [],
+    accounts: [],
     passkeys: [],
     sessions: [],
   }),
@@ -49,12 +43,23 @@ jest.mock('@expo/vector-icons', () => ({
   MaterialIcons: 'MaterialIcons',
 }));
 
+// Isolate the chat list under test from heavy presentational wrappers that rely
+// on @gorhom/bottom-sheet context (provided at the app root, not in this unit).
+jest.mock('@/components/MenuDrawer', () => {
+  const ReactModule = require('react');
+  return {
+    MenuDrawer: ({ children }: { children: React.ReactNode }) =>
+      ReactModule.createElement(ReactModule.Fragment, null, children),
+  };
+});
+jest.mock('@/components/ServiceSecretKeyVaultModal', () => ({
+  ServiceSecretKeyVaultModal: () => null,
+}));
+
 describe('<LandingScreen />', () => {
-  it('renders the core landing actions', () => {
+  it('shows the empty state when there are no connections', () => {
     const { getByText } = render(<LandingScreen />);
 
-    expect(getByText('Pair')).toBeTruthy();
-    expect(getByText('Diagnostics')).toBeTruthy();
-    expect(getByText('Reset Wallet')).toBeTruthy();
+    expect(getByText('No chats available yet')).toBeTruthy();
   });
 });
